@@ -80,6 +80,7 @@ public class HistoryServerTest extends TestLogger {
 		.disable(JsonGenerator.Feature.AUTO_CLOSE_JSON_CONTENT);
 	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
 		.enable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES);
+	private static final String JSON_FILE_ENDING = ".json";
 
 	@Rule
 	public final TemporaryFolder tmpFolder = new TemporaryFolder();
@@ -206,6 +207,7 @@ public class HistoryServerTest extends TestLogger {
 				.map(JobID::toString)
 				.orElseThrow(() -> new IllegalStateException("Expected at least one existing job"));
 
+			assertHSFilesExistence(jobIdToDelete, true);
 			// delete one archive from jm
 			Files.deleteIfExists(jmDirectory.toPath().resolve(jobIdToDelete));
 
@@ -219,9 +221,17 @@ public class HistoryServerTest extends TestLogger {
 				.map(JobID::toString)
 				.filter(jobId -> jobId.equals(jobIdToDelete))
 				.count());
+			assertHSFilesExistence(jobIdToDelete, !cleanupExpiredJobs);
 		} finally {
 			hs.stop();
 		}
+	}
+
+	private void assertHSFilesExistence(String jobId, boolean fileExists){
+		Assert.assertEquals(fileExists, Files.exists(hsDirectory.toPath().resolve("jobs").resolve(jobId)));
+		Assert.assertEquals(fileExists, Files.isDirectory(hsDirectory.toPath().resolve("jobs").resolve(jobId)));
+		Assert.assertEquals(fileExists, Files.exists(hsDirectory.toPath().resolve("jobs").resolve(jobId + JSON_FILE_ENDING)));
+		Assert.assertEquals(fileExists, Files.exists(hsDirectory.toPath().resolve("overviews").resolve(jobId + JSON_FILE_ENDING)));
 	}
 
 	private void waitForArchivesCreation(int numJobs) throws InterruptedException {
