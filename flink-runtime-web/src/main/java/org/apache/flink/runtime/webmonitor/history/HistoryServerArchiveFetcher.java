@@ -164,7 +164,7 @@ class HistoryServerArchiveFetcher {
 		private final File webJobDir;
 		private final File webOverviewDir;
 
-		private static final String JSON_FILE_ENDING = ".json";
+		static final String JSON_FILE_ENDING = ".json";
 
 		JobArchiveFetcherTask(
 			List<HistoryServer.RefreshLocation> refreshDirs,

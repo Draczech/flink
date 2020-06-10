@@ -66,6 +66,7 @@ import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import static org.apache.flink.runtime.webmonitor.history.HistoryServerArchiveFetcher.JobArchiveFetcherTask.JSON_FILE_ENDING;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -80,7 +81,6 @@ public class HistoryServerTest extends TestLogger {
 		.disable(JsonGenerator.Feature.AUTO_CLOSE_JSON_CONTENT);
 	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
 		.enable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES);
-	private static final String JSON_FILE_ENDING = ".json";
 
 	@Rule
 	public final TemporaryFolder tmpFolder = new TemporaryFolder();
